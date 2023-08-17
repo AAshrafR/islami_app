@@ -1,66 +1,19 @@
 package com.example.islamiapp.ui.home.tabs.hadeth
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.islamiapp.databinding.FragmentHadethBinding
+import com.example.islamiapp.ui.Constants
+import com.example.islamiapp.ui.home.model.Hadeth
+import com.example.islamiapp.ui.home.tabs.hadethDetails.HadethDetailsActivity
+
 
 class HadethFragment : Fragment() {
     lateinit var viewBinding: FragmentHadethBinding
-    var names = listOf(
-        "hadeth1",
-        "hadeth2",
-        "hadeth3",
-        "hadeth4",
-        "hadeth5",
-        "hadeth6",
-        "hadeth7",
-        "hadeth8",
-        "hadeth9",
-        "hadeth10",
-        "hadeth11",
-        "hadeth12",
-        "hadeth13",
-        "hadeth14",
-        "hadeth15",
-        "hadeth16",
-        "hadeth17",
-        "hadeth18",
-        "hadeth19",
-        "hadeth20",
-        "hadeth21",
-        "hadeth22",
-        "hadeth23",
-        "hadeth24",
-        "hadeth25",
-        "hadeth26",
-        "hadeth27",
-        "hadeth28",
-        "hadeth29",
-        "hadeth30",
-        "hadeth31",
-        "hadeth32",
-        "hadeth33",
-        "hadeth34",
-        "hadeth35",
-        "hadeth36",
-        "hadeth37",
-        "hadeth38",
-        "hadeth39",
-        "hadeth40",
-        "hadeth41",
-        "hadeth42",
-        "hadeth43",
-        "hadeth44",
-        "hadeth45",
-        "hadeth46",
-        "hadeth47",
-        "hadeth48",
-        "hadeth49",
-        "hadeth50",
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,17 +26,50 @@ class HadethFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
+        initViews()
     }
 
-    lateinit var adapter: HadethNameRecyclerAdapter
+    lateinit var adapter: HadethRecyclerAdapter
+    private fun initViews() {
+        adapter = HadethRecyclerAdapter(null)
+        adapter.onItemClickListener =
+            HadethRecyclerAdapter.OnItemClickListener { position, hadeth ->
+                showHadethDetails(hadeth)
 
-    private fun initRecyclerView() {
-        adapter = HadethNameRecyclerAdapter(names)
-        adapter.onItemClickListener = object : HadethNameRecyclerAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int, name: String) {
             }
-        }
         viewBinding.rvHadeth.adapter = adapter
+    }
+
+    private fun showHadethDetails(hadeth: Hadeth) {
+        val intent = Intent(activity, HadethDetailsActivity::class.java)
+        intent.putExtra(Constants.EXTRA_HADETH, hadeth)
+        startActivity(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadHadethFile()
+        bindHadethList()
+    }
+
+    private fun bindHadethList() {
+        adapter.bindItem(hadethList)
+    }
+
+    val hadethList = mutableListOf<Hadeth>()
+
+    private fun loadHadethFile() {
+        val fileContent = requireActivity().assets.open("ahadeth.txt")
+            .bufferedReader().use { it.readText() }
+        val singleHadeth = fileContent.trim().split("#")
+
+        singleHadeth.forEach { element ->
+            val lines = element.trim().split("\n")
+            val title = lines[0]
+            val content = lines.joinToString("\n")
+
+            val hadeth = Hadeth(title, content)
+            hadethList.add(hadeth)
+        }
     }
 }
