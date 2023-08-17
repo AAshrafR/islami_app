@@ -48,8 +48,8 @@ class ChapterDetailsActivity : AppCompatActivity() {
     lateinit var chapterName: String
     var chapterIndex: Int = 0
     private fun initParams() {
-        chapterName = intent.getStringExtra(Constants.EXTRA_CHAPTER_NAME) ?: ""
-        chapterIndex = intent.getIntExtra(Constants.EXTRA_CHAPTER_INDEX, 0)
+        chapterName = intent.getStringExtra(Constants.EXTRA_NAME) ?: ""
+        chapterIndex = intent.getIntExtra(Constants.EXTRA_INDEX, 0)
 
     }
 }

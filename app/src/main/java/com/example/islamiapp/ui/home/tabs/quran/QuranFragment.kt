@@ -161,8 +161,8 @@ class QuranFragment : Fragment() {
     private fun startChapterDetailsScreen(index: Int, name: String) {
 
         val intent = Intent(context, ChapterDetailsActivity::class.java)
-        intent.putExtra(Constants.EXTRA_CHAPTER_INDEX, index + 1)
-        intent.putExtra(Constants.EXTRA_CHAPTER_NAME, name)
+        intent.putExtra(Constants.EXTRA_INDEX, index + 1)
+        intent.putExtra(Constants.EXTRA_NAME, name)
         startActivity(intent)
 
     }
